@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from app.exceptions import OrderNotFoundError, OrderAlreadyCompletedError
-from app.routers import orders
+from app.routers import orders, information
 
-app = FastAPI()
+app = FastAPI(title="Учёт заказов кофейни", description="Обработка заказов кофейни", version="1.1.0")
 app.include_router(orders.router)
+app.include_router(information.router)
 
 
 @app.exception_handler(OrderNotFoundError)
@@ -15,7 +16,7 @@ async def order_not_found_exception_handler(
 
 
 @app.exception_handler(OrderAlreadyCompletedError)
-async def order_not_found_exception_handler(
+async def order_already_completed_exception_handler(
         request: Request, exc: OrderAlreadyCompletedError
 ):
     return JSONResponse(status_code=409,

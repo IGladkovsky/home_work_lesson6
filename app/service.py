@@ -1,6 +1,7 @@
 from app.repository import OrderRepository
 from app.exceptions import OrderNotFoundError, OrderAlreadyCompletedError
 from app.schemas import StatusEnum
+from datetime import datetime
 
 
 class OrderService:
@@ -19,6 +20,8 @@ class OrderService:
         return self.repository.get_by_id(order_id)
 
     def create_order(self, order):
+        order.setdefault("status", StatusEnum.PENDING)
+        order.setdefault("created_at", datetime.now().replace(microsecond=0))
         return self.repository.add(order)
 
     def delete_order(self, order_id):
@@ -26,7 +29,7 @@ class OrderService:
             raise OrderNotFoundError(order_id)
         if self.repository.get_by_id(order_id)["status"] == StatusEnum.COMPLETED:
             raise OrderAlreadyCompletedError(order_id)
-        return self.repository.remove(order_id)
+        return self.repository.delete(order_id)
 
     def update_order(self, order_id, order):
         if self.repository.get_by_id(order_id) is None:
@@ -34,3 +37,7 @@ class OrderService:
         if self.repository.get_by_id(order_id)["status"] == StatusEnum.COMPLETED:
             raise OrderAlreadyCompletedError(order_id)
         return self.repository.update(order_id, order)
+
+    def count_orders(self):
+        orders = self.repository.get_all()
+        return len(orders)

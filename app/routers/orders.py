@@ -39,4 +39,5 @@ async def patch_order(service: ServiceDep, order_id: int, order_update: OrderUpd
 
 @router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Удаление заказа")
 async def delete_order(service: ServiceDep, order_id: int):
-    return service.delete_order(order_id)
+    service.delete_order(order_id)
+    return

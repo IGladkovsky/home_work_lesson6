@@ -18,7 +18,7 @@ class OrderRepository:
         self._next_order_id += 1
         return order
 
-    def remove(self, order_id):
+    def delete(self, order_id):
         for order in self._orders:
             if order['id'] == order_id:
                 self._orders.remove(order)
